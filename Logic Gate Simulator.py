@@ -27,7 +27,7 @@ count = 0
 lastCountChange = 0
 
 #background image loaded for main menu
-BG = pygame.image.load("Background.png")
+BG = pygame.image.load(os.path.join("images", "Background.png"))
 
 #colours set
 WHITE = "#FFFBFC"
@@ -406,7 +406,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         SCREEN.fill(WHITE)
         #logic menu draw
         #load gate image
-        ORGate = pygame.image.load("ORGate.png")
+        ORGate = pygame.image.load(os.path.join("images", "ORGate.png"))
         #creation of background rectangle needed for the OR gate to be displayed
         ORrect = ORGate.get_rect()
         ORrect.center = (50,120)
@@ -423,7 +423,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         
         #all other logic elements follow the same format
         
-        NOTGate = pygame.image.load("NOTGate.png")
+        NOTGate = pygame.image.load(os.path.join("images", "NOTGate.png"))
         NOTrect = NOTGate.get_rect()
         NOTrect.center = (125,120)
         if activeGate == "NOTGate":
@@ -435,7 +435,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         NOTrectText = NOTText.get_rect()
         NOTrectText.center = (125,155)
         
-        ANDGate = pygame.image.load("ANDGate.png")
+        ANDGate = pygame.image.load(os.path.join("images", "ANDGate.png"))
         ANDrect = ANDGate.get_rect()
         ANDrect.center = (200,120)
         if activeGate == "ANDGate":
@@ -447,7 +447,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         ANDrectText = ANDText.get_rect()
         ANDrectText.center = (200,155)
         
-        NORGate = pygame.image.load("NORGate.png")
+        NORGate = pygame.image.load(os.path.join("images", "NORGate.png"))
         NORrect = NORGate.get_rect()
         NORrect.center = (50,195)
         if activeGate == "NORGate":
@@ -459,7 +459,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         NORrectText = NORText.get_rect()
         NORrectText.center = (50,230)
         
-        NANDGate = pygame.image.load("NANDGate.png")
+        NANDGate = pygame.image.load(os.path.join("images", "NANDGate.png"))
         NANDrect = NANDGate.get_rect()
         NANDrect.center = (125,195)
         if activeGate == "NANDGate":
@@ -471,7 +471,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         NANDrectText = NANDText.get_rect()
         NANDrectText.center = (125,230)
         
-        XNORGate = pygame.image.load("XNORGate.png")
+        XNORGate = pygame.image.load(os.path.join("images", "XNORGate.png"))
         XNORrect = ANDGate.get_rect()
         XNORrect.center = (200,195)
         if activeGate == "XNORGate":
@@ -483,7 +483,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         XNORrectText = XNORText.get_rect()
         XNORrectText.center = (200,230)
         
-        XORGate = pygame.image.load("XORGate.png")
+        XORGate = pygame.image.load(os.path.join("images", "XORGate.png"))
         XORrect = XORGate.get_rect()
         XORrect.center = (50,270)
         if activeGate == "XORGate":
@@ -495,7 +495,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         XORrectText = XORText.get_rect()
         XORrectText.center = (50,305)
         
-        offSwitch = pygame.image.load("off_switch.jpg")
+        offSwitch = pygame.image.load(os.path.join("images", "off_switch.jpg"))
         switchRect = offSwitch.get_rect()
         switchRect.center = (45,365)
         if activeGate == "Switch_OFF":
@@ -507,7 +507,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         switchRectText = switchText.get_rect()
         switchRectText.center = (45,385)
         
-        wireHorizontal = pygame.image.load("wire_horizontal.png")
+        wireHorizontal = pygame.image.load(os.path.join("images", "wire_horizontal.png"))
         wireRect = wireHorizontal.get_rect()
         wireRect.center = (115,370)
         if activeGate == "wireHorizontal":
@@ -519,7 +519,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         wireRectText = wireText.get_rect()
         wireRectText.center = (115,405)
         
-        clock = pygame.image.load("Clock_OFF.png")
+        clock = pygame.image.load(os.path.join("images", "Clock_OFF.png"))
         clockRect = clock.get_rect()
         clockRect.center = (190,370)
         if activeGate == "Clock":
@@ -531,7 +531,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         clockTextRect = clockText.get_rect()
         clockTextRect.center = (190,405)    
         
-        offLight = pygame.image.load("off_bulb.png")
+        offLight = pygame.image.load(os.path.join("images", "off_bulb.png"))
         lightRect = offLight.get_rect()
         lightRect.center = (47,465)
         if activeGate == "Light_OFF":
@@ -543,7 +543,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         lightRectText = lightText.get_rect()
         lightRectText.center = (47,500)
         
-        DFlipFlop = pygame.image.load("DflipFlop.png")
+        DFlipFlop = pygame.image.load(os.path.join("images", "DflipFlop.png"))
         DFlipFlopRect = DFlipFlop.get_rect()
         DFlipFlopRect.center = (47,575)
         if activeGate == "DFlipFlop":
@@ -558,13 +558,13 @@ def logicInterface(logicArray, fileName, tutorialMode):
         #auto save switch and text display
         #if auto save is off, switch is off
         if autoSave == False:
-            autoSaveSwitch = pygame.image.load("off_switch.jpg")
+            autoSaveSwitch = pygame.image.load(os.path.join("images","off_switch.jpg"))
         #if auto save is on, switch is on
         else:
-            autoSaveSwitch = pygame.image.load("on_switch.jpg")
+            autoSaveSwitch = pygame.image.load(os.path.join("images","on_switch.jpg"))
         autoSaveSwitchRect = autoSaveSwitch.get_rect()
         autoSaveSwitchRect = (1050,30)
-        #auto save unavailible
+        #auto save unavailable
         if fileName == None or tutorialMode == True:
             autoSaveText = get_font3(15).render("Auto Save", True, GREY)
         #auto save off
@@ -578,55 +578,55 @@ def logicInterface(logicArray, fileName, tutorialMode):
     
         #load wires, buttons, lights images
         
-        toBeSquare = pygame.image.load("toBeSquare.png")
+        toBeSquare = pygame.image.load(os.path.join("images", "toBeSquare.png"))
         
-        wireIntersection = pygame.image.load("wire_intersection.jpg")
-        wireIntersection_ON_BOTTOM = pygame.image.load("wire_intersection_ON_BOTTOM.jpg")
-        wireIntersection_ON_TOP = pygame.image.load("wire_intersection_ON_TOP.jpg")
-        wireIntersection_ON = pygame.image.load("wire_intersection_ON.jpg")
+        wireIntersection = pygame.image.load(os.path.join("images", "wire_intersection.jpg"))
+        wireIntersection_ON_BOTTOM = pygame.image.load(os.path.join("images", "wire_intersection_ON_BOTTOM.jpg"))
+        wireIntersection_ON_TOP = pygame.image.load(os.path.join("images", "wire_intersection_ON_TOP.jpg"))
+        wireIntersection_ON = pygame.image.load(os.path.join("images", "wire_intersection_ON.jpg"))
         
-        wireHorizontal = pygame.image.load("wire_horizontal.png")
-        wireHorizontal_ON = pygame.image.load("wire_horizontal_ON.png")
+        wireHorizontal = pygame.image.load(os.path.join("images", "wire_horizontal.png"))
+        wireHorizontal_ON = pygame.image.load(os.path.join("images", "wire_horizontal_ON.png"))
         
-        wireBottomRight = pygame.image.load("wire_bottomRight.png")
-        wireBottomRight_ON = pygame.image.load("wire_bottomRight_ON.png")
+        wireBottomRight = pygame.image.load(os.path.join("images", "wire_bottomRight.png"))
+        wireBottomRight_ON = pygame.image.load(os.path.join("images", "wire_bottomRight_ON.png"))
         
-        wireBottomLeft = pygame.image.load("wire_bottomLeft.png")
-        wireBottomLeft_ON = pygame.image.load("wire_bottomLeft_ON.png")
+        wireBottomLeft = pygame.image.load(os.path.join("images", "wire_bottomLeft.png"))
+        wireBottomLeft_ON = pygame.image.load(os.path.join("images", "wire_bottomLeft_ON.png"))
         
-        wireTopRight = pygame.image.load("wire_topRight.png")
-        wireTopRight_ON = pygame.image.load("wire_topRight_ON.png")
+        wireTopRight = pygame.image.load(os.path.join("images", "wire_topRight.png"))
+        wireTopRight_ON = pygame.image.load(os.path.join("images", "wire_topRight_ON.png"))
         
-        wireTopLeft = pygame.image.load("wire_topLeft.png")
-        wireTopLeft_ON = pygame.image.load("wire_topLeft_ON.png")
+        wireTopLeft = pygame.image.load(os.path.join("images", "wire_topLeft.png"))
+        wireTopLeft_ON = pygame.image.load(os.path.join("images", "wire_topLeft_ON.png"))
         
-        wireVertical = pygame.image.load("wire_vertical.png")
-        wireVertical_ON = pygame.image.load("wire_vertical_ON.png")
+        wireVertical = pygame.image.load(os.path.join("images", "wire_vertical.png"))
+        wireVertical_ON = pygame.image.load(os.path.join("images", "wire_vertical_ON.png"))
         
-        wireSplitterDown = pygame.image.load("wire_splitter_down.png")
-        wireSplitterDown_ON = pygame.image.load("wire_splitter_down_ON.png")
+        wireSplitterDown = pygame.image.load(os.path.join("images", "wire_splitter_down.png"))
+        wireSplitterDown_ON = pygame.image.load(os.path.join("images", "wire_splitter_down_ON.png"))
         
-        wireSplitterUp = pygame.image.load("wire_splitter_up.png")
-        wireSplitterUp_ON = pygame.image.load("wire_splitter_up_ON.png")
+        wireSplitterUp = pygame.image.load(os.path.join("images", "wire_splitter_up.png"))
+        wireSplitterUp_ON = pygame.image.load(os.path.join("images", "wire_splitter_up_ON.png"))
         
-        wireSplitterRight = pygame.image.load("wire_splitter_right.png")
-        wireSplitterRight_ON = pygame.image.load("wire_splitter_right_ON.png")
+        wireSplitterRight = pygame.image.load(os.path.join("images", "wire_splitter_right.png"))
+        wireSplitterRight_ON = pygame.image.load(os.path.join("images", "wire_splitter_right_ON.png"))
         
-        wireSplitterLeft = pygame.image.load("wire_splitter_left.png")
-        wireSplitterLeft_ON = pygame.image.load("wire_splitter_left_ON.png")
+        wireSplitterLeft = pygame.image.load(os.path.join("images", "wire_splitter_left.png"))
+        wireSplitterLeft_ON = pygame.image.load(os.path.join("images", "wire_splitter_left_ON.png"))
         
-        wireCross = pygame.image.load("wire_cross.png")
-        wireCross_ON_HORIZONTAL = pygame.image.load("wire_cross_ON_HORIZONTAL.png")
-        wireCross_ON_VERTICAL = pygame.image.load("wire_cross_ON_VERTICAL.png")
-        wireCross_ON = pygame.image.load("wire_cross_ON.png")
+        wireCross = pygame.image.load(os.path.join("images", "wire_cross.png"))
+        wireCross_ON_HORIZONTAL = pygame.image.load(os.path.join("images", "wire_cross_ON_HORIZONTAL.png"))
+        wireCross_ON_VERTICAL = pygame.image.load(os.path.join("images", "wire_cross_ON_VERTICAL.png"))
+        wireCross_ON = pygame.image.load(os.path.join("images", "wire_cross_ON.png"))
         
-        onSwitch = pygame.image.load("on_switch.jpg")
-        onLight = pygame.image.load("on_bulb.png")
+        onSwitch = pygame.image.load(os.path.join("images", "on_switch.jpg"))
+        onLight = pygame.image.load(os.path.join("images", "on_bulb.png"))
         
-        clock_OFF = pygame.image.load("Clock_OFF.png")
-        clock_ON = pygame.image.load("Clock_ON.png")
+        clock_OFF = pygame.image.load(os.path.join("images", "Clock_OFF.png"))
+        clock_ON = pygame.image.load(os.path.join("images", "Clock_ON.png"))
         
-        DFlipFlop = pygame.image.load("DFlipFlop.png")
+        DFlipFlop = pygame.image.load(os.path.join("images", "DflipFlop.png"))
         
         #draw grid
         for i in range(251,1280,49):
