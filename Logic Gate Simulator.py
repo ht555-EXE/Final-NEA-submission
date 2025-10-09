@@ -1,6 +1,6 @@
 #imports
 import pygame, sys
-from button_modified import Button
+from button import Button
 import pickle
 import time
 import os
@@ -38,19 +38,33 @@ RED = "#AE0E2E"
 GREEN = "#7CA982"
 GREY = "#967D69"
 
-#font creation
-def get_font1(size): 
-    return pygame.font.Font("font1.ttf", size)
-def get_font2(size):
-    return pygame.font.Font("font2.ttf", size)
-def get_font3(size):
-    return pygame.font.Font("font3.otf", size)
+def loadFontFromFolder(filename, size):
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    font_path = os.path.join(base_dir, "Fonts", filename)
+    try:
+        return pygame.font.Font(font_path, size)
+    except Exception:
+        # Fallback to a default pygame font if the specified font cannot be loaded
+        try:
+            return pygame.font.Font(None, size)
+        except Exception:
+            # As a last resort, use a system font
+            return pygame.font.SysFont(None, size)
+
+def getFont1(size):
+    return loadFontFromFolder("font1.ttf", size)
+
+def getFont2(size):
+    return loadFontFromFolder("font2.ttf", size)
+
+def getFont3(size):
+    return loadFontFromFolder("font3.otf", size)
 
 #logicArray and fileName parameters are used to return the user to their document once they have saved or go back
 def saveAsInterface(logicArray, fileName):
     pygame.display.set_caption("Save As")
     #font for user text
-    baseFont = get_font3(32)
+    baseFont = getFont3(32)
     userText = ""
     #text input is shown to user in a rectangle
     inputRect = pygame.Rect(390,315,200,40)
@@ -58,15 +72,15 @@ def saveAsInterface(logicArray, fileName):
     while True:
         saveAs_MOUSE_POS = pygame.mouse.get_pos()
         SCREEN.fill(BLACK)
-        saveFile_TEXT = get_font2(45).render("Enter New File Name", True, WHITE)
+        saveFile_TEXT = getFont2(45).render("Enter New File Name", True, WHITE)
         saveFile_RECT = saveFile_TEXT.get_rect(center=(640, 260))
         SCREEN.blit(saveFile_TEXT, saveFile_RECT)
-        saveFileBack = Button(pos=(100, 675), text_input="BACK", font=get_font2(35), base_color=WHITE, hovering_color=GREY)
+        saveFileBack = Button(pos=(100, 675), text_input="BACK", font=getFont2(35), base_color=WHITE, hovering_color=GREY)
         #enter button only works if the user has inputted a name
         if userText != "":
-            saveFileEnter = Button(pos=(640, 420), text_input="ENTER", font=get_font2(35), base_color=WHITE, hovering_color=GREY)
+            saveFileEnter = Button(pos=(640, 420), text_input="ENTER", font=getFont2(35), base_color=WHITE, hovering_color=GREY)
         else:
-            saveFileEnter = Button(pos=(640, 420), text_input="ENTER", font=get_font2(35), base_color=GREY, hovering_color=GREY)
+            saveFileEnter = Button(pos=(640, 420), text_input="ENTER", font=getFont2(35), base_color=GREY, hovering_color=GREY)
         #user text is placed onto pygame window
         textSurface = baseFont.render(userText,True,(255,255,255))
         SCREEN.blit(textSurface, (inputRect.x + 5, inputRect.y - 5))
@@ -94,7 +108,7 @@ def saveAsInterface(logicArray, fileName):
                         logicFile.close()
                         print("Save Successful")
                         #save successful prompt displayed
-                        saveText = get_font2(35).render("Save Successful", True, GREEN)
+                        saveText = getFont2(35).render("Save Successful", True, GREEN)
                         saveTextRect = saveText.get_rect()
                         saveTextRect.center = (640,380)
                         SCREEN.blit(saveText, saveTextRect)
@@ -117,7 +131,7 @@ def saveAsInterface(logicArray, fileName):
                         pickle.dump(logicArray, logicFile)
                         logicFile.close()
                         print("Save Successful")
-                        saveText = get_font2(35).render("Save Successful", True, GREEN)
+                        saveText = getFont2(35).render("Save Successful", True, GREEN)
                         saveTextRect = saveText.get_rect()
                         saveTextRect.center = (640,380)
                         SCREEN.blit(saveText, saveTextRect)
@@ -135,7 +149,7 @@ def saveAsInterface(logicArray, fileName):
 def loadInterface(logicArray, fileName, menuBack):
     pygame.display.set_caption("Load")
     #font for user text
-    baseFont = get_font3(32)
+    baseFont = getFont3(32)
     userText = ""
     #text input is shown in a rectangle
     inputRect = pygame.Rect(390,315,200,40)
@@ -143,15 +157,15 @@ def loadInterface(logicArray, fileName, menuBack):
     while True:
         load_MOUSE_POS = pygame.mouse.get_pos()
         SCREEN.fill(BLACK)
-        loadFile_TEXT = get_font2(45).render("Enter file name to load", True, WHITE)
+        loadFile_TEXT = getFont2(45).render("Enter file name to load", True, WHITE)
         loadFile_RECT = loadFile_TEXT.get_rect(center=(640, 260))
         SCREEN.blit(loadFile_TEXT, loadFile_RECT)
-        loadFileBack = Button(pos=(100, 675), text_input="BACK", font=get_font2(35), base_color=WHITE, hovering_color=GREY)
+        loadFileBack = Button(pos=(100, 675), text_input="BACK", font=getFont2(35), base_color=WHITE, hovering_color=GREY)
         #enter button only works if the user has inputted a name
         if userText != "":
-            loadFileEnter = Button(pos=(640, 420), text_input="ENTER", font=get_font2(35), base_color=WHITE, hovering_color=GREY)
+            loadFileEnter = Button(pos=(640, 420), text_input="ENTER", font=getFont2(35), base_color=WHITE, hovering_color=GREY)
         else:
-            loadFileEnter = Button(pos=(640, 420), text_input="ENTER", font=get_font2(35), base_color=GREY, hovering_color=GREY)
+            loadFileEnter = Button(pos=(640, 420), text_input="ENTER", font=getFont2(35), base_color=GREY, hovering_color=GREY)
         #user text is placed into pygame window
         textSurface = baseFont.render(userText,True,(255,255,255))
         SCREEN.blit(textSurface, (inputRect.x + 5, inputRect.y - 5))
@@ -180,7 +194,7 @@ def loadInterface(logicArray, fileName, menuBack):
                     try:
                         logicFile = open(userText, 'rb')
                     except:
-                        loadFailText = get_font2(35).render("File Not Found", True, RED)
+                        loadFailText = getFont2(35).render("File Not Found", True, RED)
                         loadFailTextRect = loadFailText.get_rect()
                         loadFailTextRect.center = (640,380)
                         SCREEN.blit(loadFailText, loadFailTextRect)
@@ -202,7 +216,7 @@ def loadInterface(logicArray, fileName, menuBack):
                     try:
                         logicFile = open(userText, 'rb')
                     except:
-                        loadFailText = get_font2(35).render("File Not Found", True, RED)
+                        loadFailText = getFont2(35).render("File Not Found", True, RED)
                         loadFailTextRect = loadFailText.get_rect()
                         loadFailTextRect.center = (640,380)
                         SCREEN.blit(loadFailText, loadFailTextRect)
@@ -288,7 +302,7 @@ def translate(truthTable, switchCount, lightCount, switchCombinations, logicArra
             rectangleWidth += 49
             for j in range(542,(switchCount*49)+542,49):
                 #state being placed depends on horizontal and vertical position in truth table array
-                truthTable_TEXT = get_font1(25).render(str(truthTable[0][countVertical][countHorizontal]), True, WHITE)
+                truthTable_TEXT = getFont1(25).render(str(truthTable[0][countVertical][countHorizontal]), True, WHITE)
                 #i and j values equal the pixel count at the top left corner of the grid square, 25 is added to each value to find the centre
                 truthTable_RECT = truthTable_TEXT.get_rect(center=(j+25, i+25))
                 SCREEN.blit(truthTable_TEXT, truthTable_RECT)
@@ -301,7 +315,7 @@ def translate(truthTable, switchCount, lightCount, switchCombinations, logicArra
                     countVertical += 1
         
         #input header text is generated at a fixed position
-        inputsText = get_font1(15).render("Inputs", True, WHITE)
+        inputsText = getFont1(15).render("Inputs", True, WHITE)
         inputTextRect = pygame.Rect(542,20,rectangleWidth, 20)
         SCREEN.blit(inputsText, inputTextRect)
                     
@@ -311,7 +325,7 @@ def translate(truthTable, switchCount, lightCount, switchCombinations, logicArra
         #output states are generated in grid
         for i in range(40,(switchCombinations*49)+40,49):
             for j in range((switchCount*49)+542,(lightCount*49)+(switchCount*49)+542,49):
-                truthTable_TEXT = get_font1(25).render(str(truthTable[1][countVertical][countHorizontal]), True, GREY)
+                truthTable_TEXT = getFont1(25).render(str(truthTable[1][countVertical][countHorizontal]), True, GREY)
                 truthTable_RECT = truthTable_TEXT.get_rect(center=(j+25, i+25))
                 SCREEN.blit(truthTable_TEXT, truthTable_RECT)
                 if countHorizontal < lightCount-1:
@@ -321,13 +335,13 @@ def translate(truthTable, switchCount, lightCount, switchCombinations, logicArra
                     countVertical += 1
         
         #output header text is generated based on the amount of inputs compared to inputs and outputs
-        outputText = get_font1(15).render("Outputs", True, WHITE)
+        outputText = getFont1(15).render("Outputs", True, WHITE)
         outputTextRect = pygame.Rect((switchCount*49)+542,20,rectangleWidth, 20)
         SCREEN.blit(outputText, outputTextRect)
         
         translate_MOUSE_POS = pygame.mouse.get_pos()
         
-        translateBack = Button(pos=(100, 675), text_input="BACK", font=get_font2(35), base_color=WHITE, hovering_color=GREY)
+        translateBack = Button(pos=(100, 675), text_input="BACK", font=getFont2(35), base_color=WHITE, hovering_color=GREY)
         
         translateBack.changeColor(translate_MOUSE_POS)
         translateBack.update(SCREEN)
@@ -412,11 +426,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         ORrect.center = (50,120)
         #creation of the text description of the gate, colours change depending on events in the logic interface
         if activeGate == "ORGate":
-            ORText = get_font3(15).render("OR Gate", True, BLUE)
+            ORText = getFont3(15).render("OR Gate", True, BLUE)
         elif tutorialPhase == None  or tutorialPhase == 10:
-            ORText = get_font3(15).render("OR Gate", True, BLACK)
+            ORText = getFont3(15).render("OR Gate", True, BLACK)
         elif tutorialPhase != None:
-            ORText = get_font3(15).render("OR Gate", True, GREY)
+            ORText = getFont3(15).render("OR Gate", True, GREY)
         #creation of the background rectangle needed for text description
         ORrectText = ORText.get_rect()
         ORrectText.center = (50,155)
@@ -427,11 +441,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         NOTrect = NOTGate.get_rect()
         NOTrect.center = (125,120)
         if activeGate == "NOTGate":
-            NOTText = get_font3(15).render("NOT Gate", True, BLUE)
+            NOTText = getFont3(15).render("NOT Gate", True, BLUE)
         elif tutorialPhase == None or tutorialPhase == 3:
-            NOTText = get_font3(15).render("NOT Gate", True, BLACK)
+            NOTText = getFont3(15).render("NOT Gate", True, BLACK)
         elif tutorialPhase != None:
-            NOTText = get_font3(15).render("NOT Gate", True, GREY)
+            NOTText = getFont3(15).render("NOT Gate", True, GREY)
         NOTrectText = NOTText.get_rect()
         NOTrectText.center = (125,155)
         
@@ -439,11 +453,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         ANDrect = ANDGate.get_rect()
         ANDrect.center = (200,120)
         if activeGate == "ANDGate":
-            ANDText = get_font3(15).render("AND Gate", True, BLUE)
+            ANDText = getFont3(15).render("AND Gate", True, BLUE)
         elif tutorialPhase == None or tutorialPhase == 8  or tutorialPhase == 10:
-            ANDText = get_font3(15).render("AND Gate", True, BLACK)
+            ANDText = getFont3(15).render("AND Gate", True, BLACK)
         elif tutorialPhase != None:
-            ANDText = get_font3(15).render("AND Gate", True, GREY)
+            ANDText = getFont3(15).render("AND Gate", True, GREY)
         ANDrectText = ANDText.get_rect()
         ANDrectText.center = (200,155)
         
@@ -451,11 +465,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         NORrect = NORGate.get_rect()
         NORrect.center = (50,195)
         if activeGate == "NORGate":
-            NORText = get_font3(15).render("NOR Gate", True, BLUE)
+            NORText = getFont3(15).render("NOR Gate", True, BLUE)
         elif tutorialPhase == None or tutorialPhase == 10:
-            NORText = get_font3(15).render("NOR Gate", True, BLACK)
+            NORText = getFont3(15).render("NOR Gate", True, BLACK)
         elif tutorialPhase != None:
-            NORText = get_font3(15).render("NOR Gate", True, GREY)
+            NORText = getFont3(15).render("NOR Gate", True, GREY)
         NORrectText = NORText.get_rect()
         NORrectText.center = (50,230)
         
@@ -463,11 +477,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         NANDrect = NANDGate.get_rect()
         NANDrect.center = (125,195)
         if activeGate == "NANDGate":
-            NANDText = get_font3(15).render("NAND Gate", True, BLUE)
+            NANDText = getFont3(15).render("NAND Gate", True, BLUE)
         elif tutorialPhase == None or tutorialPhase == 10:
-            NANDText = get_font3(15).render("NAND Gate", True, BLACK)
+            NANDText = getFont3(15).render("NAND Gate", True, BLACK)
         elif tutorialPhase != None:
-            NANDText = get_font3(15).render("NAND Gate", True, GREY)
+            NANDText = getFont3(15).render("NAND Gate", True, GREY)
         NANDrectText = NANDText.get_rect()
         NANDrectText.center = (125,230)
         
@@ -475,11 +489,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         XNORrect = ANDGate.get_rect()
         XNORrect.center = (200,195)
         if activeGate == "XNORGate":
-            XNORText = get_font3(15).render("XNOR Gate", True, BLUE)
+            XNORText = getFont3(15).render("XNOR Gate", True, BLUE)
         elif tutorialPhase == None or tutorialPhase == 10:
-            XNORText = get_font3(15).render("XNOR Gate", True, BLACK)
+            XNORText = getFont3(15).render("XNOR Gate", True, BLACK)
         elif tutorialPhase != None:
-            XNORText = get_font3(15).render("XNOR Gate", True, GREY)
+            XNORText = getFont3(15).render("XNOR Gate", True, GREY)
         XNORrectText = XNORText.get_rect()
         XNORrectText.center = (200,230)
         
@@ -487,11 +501,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         XORrect = XORGate.get_rect()
         XORrect.center = (50,270)
         if activeGate == "XORGate":
-            XORText = get_font3(15).render("XOR Gate", True, BLUE)
+            XORText = getFont3(15).render("XOR Gate", True, BLUE)
         elif tutorialPhase == None or tutorialPhase == 10:
-            XORText = get_font3(15).render("XOR Gate", True, BLACK)
+            XORText = getFont3(15).render("XOR Gate", True, BLACK)
         elif tutorialPhase != None:
-            XORText = get_font3(15).render("XOR Gate", True, GREY)
+            XORText = getFont3(15).render("XOR Gate", True, GREY)
         XORrectText = XORText.get_rect()
         XORrectText.center = (50,305)
         
@@ -499,11 +513,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         switchRect = offSwitch.get_rect()
         switchRect.center = (45,365)
         if activeGate == "Switch_OFF":
-            switchText = get_font3(15).render("Switch", True, BLUE)
+            switchText = getFont3(15).render("Switch", True, BLUE)
         elif tutorialPhase == None or tutorialPhase == 1 or tutorialPhase == 6:
-            switchText = get_font3(15).render("Switch", True, BLACK)
+            switchText = getFont3(15).render("Switch", True, BLACK)
         elif tutorialPhase != None:
-            switchText = get_font3(15).render("Switch", True, GREY)
+            switchText = getFont3(15).render("Switch", True, GREY)
         switchRectText = switchText.get_rect()
         switchRectText.center = (45,385)
         
@@ -511,11 +525,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         wireRect = wireHorizontal.get_rect()
         wireRect.center = (115,370)
         if activeGate == "wireHorizontal":
-            wireText = get_font3(15).render("Wire", True, BLUE)
+            wireText = getFont3(15).render("Wire", True, BLUE)
         elif tutorialPhase == None or tutorialPhase == 2 or tutorialPhase == 7:
-            wireText = get_font3(15).render("Wire", True, BLACK)
+            wireText = getFont3(15).render("Wire", True, BLACK)
         elif tutorialPhase != None:
-            wireText = get_font3(15).render("Wire", True, GREY)
+            wireText = getFont3(15).render("Wire", True, GREY)
         wireRectText = wireText.get_rect()
         wireRectText.center = (115,405)
         
@@ -523,11 +537,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         clockRect = clock.get_rect()
         clockRect.center = (190,370)
         if activeGate == "Clock":
-            clockText = get_font3(15).render("Clock", True, BLUE)
+            clockText = getFont3(15).render("Clock", True, BLUE)
         elif tutorialPhase != None:
-            clockText = get_font3(15).render("Clock", True, GREY)
+            clockText = getFont3(15).render("Clock", True, GREY)
         else:
-            clockText = get_font3(15).render("Clock", True, BLACK)
+            clockText = getFont3(15).render("Clock", True, BLACK)
         clockTextRect = clockText.get_rect()
         clockTextRect.center = (190,405)    
         
@@ -535,11 +549,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         lightRect = offLight.get_rect()
         lightRect.center = (47,465)
         if activeGate == "Light_OFF":
-            lightText = get_font3(15).render("Light Bulb", True, BLUE)
+            lightText = getFont3(15).render("Light Bulb", True, BLUE)
         elif tutorialPhase == None or tutorialPhase == 4 or tutorialPhase == 9:
-            lightText = get_font3(15).render("Light Bulb", True, BLACK)
+            lightText = getFont3(15).render("Light Bulb", True, BLACK)
         elif tutorialPhase != None:
-            lightText = get_font3(15).render("Light Bulb", True, GREY)
+            lightText = getFont3(15).render("Light Bulb", True, GREY)
         lightRectText = lightText.get_rect()
         lightRectText.center = (47,500)
         
@@ -547,11 +561,11 @@ def logicInterface(logicArray, fileName, tutorialMode):
         DFlipFlopRect = DFlipFlop.get_rect()
         DFlipFlopRect.center = (47,575)
         if activeGate == "DFlipFlop":
-            DFlipFlopText = get_font3(15).render("Edge D Type", True, BLUE)
+            DFlipFlopText = getFont3(15).render("Edge D Type", True, BLUE)
         elif tutorialPhase == None:
-            DFlipFlopText = get_font3(15).render("Edge D Type", True, BLACK)
+            DFlipFlopText = getFont3(15).render("Edge D Type", True, BLACK)
         else:
-            DFlipFlopText = get_font3(15).render("Edge D Type", True, GREY)
+            DFlipFlopText = getFont3(15).render("Edge D Type", True, GREY)
         DFlipFlopTextRect = DFlipFlopText.get_rect()
         DFlipFlopTextRect.center = (47,610)
         
@@ -566,13 +580,13 @@ def logicInterface(logicArray, fileName, tutorialMode):
         autoSaveSwitchRect = (1050,30)
         #auto save unavailable
         if fileName == None or tutorialMode == True:
-            autoSaveText = get_font3(15).render("Auto Save", True, GREY)
+            autoSaveText = getFont3(15).render("Auto Save", True, GREY)
         #auto save off
         elif autoSave == False:
-            autoSaveText = get_font3(15).render("Auto Save", True, BLACK)
+            autoSaveText = getFont3(15).render("Auto Save", True, BLACK)
         #auto save on
         elif autoSave == True:
-            autoSaveText = get_font3(15).render("Auto Save", True, GREEN)
+            autoSaveText = getFont3(15).render("Auto Save", True, GREEN)
         autoSaveTextRect = autoSaveText.get_rect()
         autoSaveTextRect.center = (1150,42)
     
@@ -853,70 +867,70 @@ def logicInterface(logicArray, fileName, tutorialMode):
         
         #button creation
         if tutorialPhase == None:
-            logicInterfaceSave = Button(pos=(55,30), text_input="Save", font=get_font2(25), base_color=BLACK, hovering_color=GREY)
-            logicInterfaceSaveAs = Button(pos=(145,30), text_input="Save As", font=get_font2(25), base_color=BLACK, hovering_color=GREY)
-            logicInterfaceLoad = Button(pos=(235,30), text_input="Load", font=get_font2(25), base_color=BLACK, hovering_color=GREY)
+            logicInterfaceSave = Button(pos=(55,30), text_input="Save", font=getFont2(25), base_color=BLACK, hovering_color=GREY)
+            logicInterfaceSaveAs = Button(pos=(145,30), text_input="Save As", font=getFont2(25), base_color=BLACK, hovering_color=GREY)
+            logicInterfaceLoad = Button(pos=(235,30), text_input="Load", font=getFont2(25), base_color=BLACK, hovering_color=GREY)
             #undo button changes colour based on stack being empty
             if undoStack == []:
-                logicInterfaceUndo = Button(pos=(315,30), text_input="Undo", font=get_font2(25), base_color=GREY, hovering_color=GREY)
+                logicInterfaceUndo = Button(pos=(315,30), text_input="Undo", font=getFont2(25), base_color=GREY, hovering_color=GREY)
             else:
-                logicInterfaceUndo = Button(pos=(315,30), text_input="Undo", font=get_font2(25), base_color=BLACK, hovering_color=GREY)
+                logicInterfaceUndo = Button(pos=(315,30), text_input="Undo", font=getFont2(25), base_color=BLACK, hovering_color=GREY)
             #undo button changes colour based on stack being empty
             if redoStack == []:
-                logicInterfaceRedo = Button(pos=(390,30), text_input="Redo", font=get_font2(25), base_color=GREY, hovering_color=GREY)
+                logicInterfaceRedo = Button(pos=(390,30), text_input="Redo", font=getFont2(25), base_color=GREY, hovering_color=GREY)
             else:
-                logicInterfaceRedo = Button(pos=(390,30), text_input="Redo", font=get_font2(25), base_color=BLACK, hovering_color=GREY)
-            logicInterfaceTruthTable = Button(pos=(500,30), text_input="Truth Table", font=get_font2(25), base_color=BLACK, hovering_color=GREY)
+                logicInterfaceRedo = Button(pos=(390,30), text_input="Redo", font=getFont2(25), base_color=BLACK, hovering_color=GREY)
+            logicInterfaceTruthTable = Button(pos=(500,30), text_input="Truth Table", font=getFont2(25), base_color=BLACK, hovering_color=GREY)
             #delete button changes colour based on delete function being active
             if activeGate != "Delete":
-                logicInterfaceDelete = Button(pos=(625,30), text_input="Delete", font=get_font2(25), base_color=BLACK, hovering_color=GREY)
-            logicInterfaceClear = Button(pos=(715,30), text_input="Clear", font=get_font2(25), base_color=BLACK, hovering_color=GREY)
-            logicInterfaceNew = Button(pos=(795,30), text_input="New", font=get_font2(25), base_color=BLACK, hovering_color=GREY)
-            logicInterfaceMainMenu = Button(pos=(905,30), text_input="Main Menu", font=get_font2(25), base_color=BLACK, hovering_color=GREY)
+                logicInterfaceDelete = Button(pos=(625,30), text_input="Delete", font=getFont2(25), base_color=BLACK, hovering_color=GREY)
+            logicInterfaceClear = Button(pos=(715,30), text_input="Clear", font=getFont2(25), base_color=BLACK, hovering_color=GREY)
+            logicInterfaceNew = Button(pos=(795,30), text_input="New", font=getFont2(25), base_color=BLACK, hovering_color=GREY)
+            logicInterfaceMainMenu = Button(pos=(905,30), text_input="Main Menu", font=getFont2(25), base_color=BLACK, hovering_color=GREY)
         #all options are disabled in tutorial
         elif tutorialPhase == 1:
-            logicInterfaceSave = Button(pos=(55,30), text_input="Save", font=get_font2(25), base_color=GREY, hovering_color=GREY)
-            logicInterfaceSaveAs = Button(pos=(145,30), text_input="Save As", font=get_font2(25), base_color=GREY, hovering_color=GREY)
-            logicInterfaceLoad = Button(pos=(235,30), text_input="Load", font=get_font2(25), base_color=GREY, hovering_color=GREY)
-            logicInterfaceUndo = Button(pos=(315,30), text_input="Undo", font=get_font2(25), base_color=GREY, hovering_color=GREY)
-            logicInterfaceRedo = Button(pos=(390,30), text_input="Redo", font=get_font2(25), base_color=GREY, hovering_color=GREY)
-            logicInterfaceTruthTable = Button(pos=(500,30), text_input="Truth Table", font=get_font2(25), base_color=GREY, hovering_color=GREY)
-            logicInterfaceDelete = Button(pos=(625,30), text_input="Delete", font=get_font2(25), base_color=GREY, hovering_color=GREY)
-            logicInterfaceClear = Button(pos=(715,30), text_input="Clear", font=get_font2(25), base_color=GREY, hovering_color=GREY)
-            logicInterfaceNew = Button(pos=(795,30), text_input="New", font=get_font2(25), base_color=GREY, hovering_color=GREY)
-            logicInterfaceMainMenu = Button(pos=(905,30), text_input="Main Menu", font=get_font2(25), base_color=GREY, hovering_color=GREY)
-            logicInterfaceTutorialBack = Button(pos=(110,680), text_input="Back", font=get_font2(25), base_color=BLACK, hovering_color=GREY) 
+            logicInterfaceSave = Button(pos=(55,30), text_input="Save", font=getFont2(25), base_color=GREY, hovering_color=GREY)
+            logicInterfaceSaveAs = Button(pos=(145,30), text_input="Save As", font=getFont2(25), base_color=GREY, hovering_color=GREY)
+            logicInterfaceLoad = Button(pos=(235,30), text_input="Load", font=getFont2(25), base_color=GREY, hovering_color=GREY)
+            logicInterfaceUndo = Button(pos=(315,30), text_input="Undo", font=getFont2(25), base_color=GREY, hovering_color=GREY)
+            logicInterfaceRedo = Button(pos=(390,30), text_input="Redo", font=getFont2(25), base_color=GREY, hovering_color=GREY)
+            logicInterfaceTruthTable = Button(pos=(500,30), text_input="Truth Table", font=getFont2(25), base_color=GREY, hovering_color=GREY)
+            logicInterfaceDelete = Button(pos=(625,30), text_input="Delete", font=getFont2(25), base_color=GREY, hovering_color=GREY)
+            logicInterfaceClear = Button(pos=(715,30), text_input="Clear", font=getFont2(25), base_color=GREY, hovering_color=GREY)
+            logicInterfaceNew = Button(pos=(795,30), text_input="New", font=getFont2(25), base_color=GREY, hovering_color=GREY)
+            logicInterfaceMainMenu = Button(pos=(905,30), text_input="Main Menu", font=getFont2(25), base_color=GREY, hovering_color=GREY)
+            logicInterfaceTutorialBack = Button(pos=(110,680), text_input="Back", font=getFont2(25), base_color=BLACK, hovering_color=GREY) 
         elif tutorialPhase == 4 or tutorialPhase == 10:
-            logicInterfaceTutorialNext = Button(pos=(200,680), text_input="Next", font=get_font2(25), base_color=BLACK, hovering_color=GREY)
+            logicInterfaceTutorialNext = Button(pos=(200,680), text_input="Next", font=getFont2(25), base_color=BLACK, hovering_color=GREY)
         
         #logic gate menu text creation
-        logicGateText = get_font3(20).render("Logic Gates", True, BLACK)
+        logicGateText = getFont3(20).render("Logic Gates", True, BLACK)
         logicGateRectText = logicGateText.get_rect()
         logicGateRectText.center = (70,80)
         SCREEN.blit(logicGateText, logicGateRectText)
         
-        inputText = get_font3(20).render("Inputs", True, BLACK)
+        inputText = getFont3(20).render("Inputs", True, BLACK)
         inputTextRect = inputText.get_rect()
         inputTextRect.center = (45,330)
         SCREEN.blit(inputText, inputTextRect)
         
-        outputText = get_font3(20).render("Outputs", True, BLACK)
+        outputText = getFont3(20).render("Outputs", True, BLACK)
         outputTextRect = outputText.get_rect()
         outputTextRect.center = (50, 425)
         SCREEN.blit(outputText, outputTextRect)
         
-        flipFlopText = get_font3(20).render("Flip Flops", True, BLACK)
+        flipFlopText = getFont3(20).render("Flip Flops", True, BLACK)
         flipFlopTextRect = outputText.get_rect()
         flipFlopTextRect.center = (45, 530)
         SCREEN.blit(flipFlopText, flipFlopTextRect)
         
         #document name text
         if tutorialPhase != None:
-            fileNameText = get_font3(15).render("Tutorial", True, BLACK)
+            fileNameText = getFont3(15).render("Tutorial", True, BLACK)
         elif fileName == None:
-            fileNameText = get_font3(15).render("New Document", True, BLACK)
+            fileNameText = getFont3(15).render("New Document", True, BLACK)
         else:
-            fileNameText = get_font3(15).render(fileName, True, BLACK)
+            fileNameText = getFont3(15).render(fileName, True, BLACK)
         fileNameTextRect = fileNameText.get_rect()
         fileNameTextRect.center = (1100,10)
         SCREEN.blit(fileNameText, fileNameTextRect)
@@ -1656,7 +1670,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
             SCREEN.blit(rectangleSurface, rectangleRect)
             #drawing lines of text
             for line in paragraphText:
-                textSurface = get_font3(15).render(line, True, BLACK)
+                textSurface = getFont3(15).render(line, True, BLACK)
                 SCREEN.blit(textSurface, (835, yPos))
                 yPos += lineSpacing
         elif tutorialPhase == 2:
@@ -1678,7 +1692,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
             rectangleRect.topleft = (760, 280)
             SCREEN.blit(rectangleSurface, rectangleRect)
             for line in paragraphText:
-                textSurface = get_font3(15).render(line, True, BLACK)
+                textSurface = getFont3(15).render(line, True, BLACK)
                 SCREEN.blit(textSurface, (765, yPos))
                 yPos += lineSpacing
         elif tutorialPhase == 3:
@@ -1700,7 +1714,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
             rectangleRect.topleft = (755, 280)
             SCREEN.blit(rectangleSurface, rectangleRect)
             for line in paragraphText:
-                textSurface = get_font3(15).render(line, True, BLACK)
+                textSurface = getFont3(15).render(line, True, BLACK)
                 SCREEN.blit(textSurface, (760, yPos))
                 yPos += lineSpacing
         elif tutorialPhase == 4:
@@ -1721,7 +1735,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
             rectangleRect.topleft = (775, 280)
             SCREEN.blit(rectangleSurface, rectangleRect)
             for line in paragraphText:
-                textSurface = get_font3(15).render(line, True, BLACK)
+                textSurface = getFont3(15).render(line, True, BLACK)
                 SCREEN.blit(textSurface, (780, yPos))
                 yPos += lineSpacing
         elif tutorialPhase == 5:
@@ -1743,7 +1757,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
             rectangleRect.topleft = (800, 280)
             SCREEN.blit(rectangleSurface, rectangleRect)
             for line in paragraphText:
-                textSurface = get_font3(15).render(line, True, BLACK)
+                textSurface = getFont3(15).render(line, True, BLACK)
                 SCREEN.blit(textSurface, (805, yPos))
                 yPos += lineSpacing
         elif tutorialPhase == 6:
@@ -1765,7 +1779,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
             rectangleRect.topleft = (830, 280)
             SCREEN.blit(rectangleSurface, rectangleRect)
             for line in paragraphText:
-                textSurface = get_font3(15).render(line, True, BLACK)
+                textSurface = getFont3(15).render(line, True, BLACK)
                 SCREEN.blit(textSurface, (835, yPos))
                 yPos += lineSpacing
         elif tutorialPhase == 7:
@@ -1787,7 +1801,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
             rectangleRect.topleft = (750, 280)
             SCREEN.blit(rectangleSurface, rectangleRect)
             for line in paragraphText:
-                textSurface = get_font3(15).render(line, True, BLACK)
+                textSurface = getFont3(15).render(line, True, BLACK)
                 SCREEN.blit(textSurface, (755, yPos))
                 yPos += lineSpacing
         elif tutorialPhase == 8:
@@ -1809,7 +1823,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
             rectangleRect.topleft = (650, 280)
             SCREEN.blit(rectangleSurface, rectangleRect)
             for line in paragraphText:
-                textSurface = get_font3(15).render(line, True, BLACK)
+                textSurface = getFont3(15).render(line, True, BLACK)
                 SCREEN.blit(textSurface, (655, yPos))
                 yPos += lineSpacing
         elif tutorialPhase == 9:
@@ -1830,7 +1844,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
             rectangleRect.topleft = (775, 280)
             SCREEN.blit(rectangleSurface, rectangleRect)
             for line in paragraphText:
-                textSurface = get_font3(15).render(line, True, BLACK)
+                textSurface = getFont3(15).render(line, True, BLACK)
                 SCREEN.blit(textSurface, (780, yPos))
                 yPos += lineSpacing
         elif tutorialPhase == 10:
@@ -1853,7 +1867,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
             rectangleRect.topleft = (620, 280)
             SCREEN.blit(rectangleSurface, rectangleRect)
             for line in paragraphText:
-                textSurface = get_font3(15).render(line, True, BLACK)
+                textSurface = getFont3(15).render(line, True, BLACK)
                 SCREEN.blit(textSurface, (625, yPos))
                 yPos += lineSpacing
             
@@ -1895,7 +1909,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
                     logicFile = open(fileName, "wb")
                     pickle.dump(logicArray, logicFile)
                     logicFile.close()
-                    logicSaveText = get_font2(25).render("Save Successful", True, GREEN)
+                    logicSaveText = getFont2(25).render("Save Successful", True, GREEN)
                     logicSaveTextRect = logicSaveText.get_rect()
                     logicSaveTextRect.center = (120,670)
                     SCREEN.blit(logicSaveText, logicSaveTextRect)
@@ -1925,14 +1939,14 @@ def logicInterface(logicArray, fileName, tutorialMode):
                         if activeGate != "Delete":
                             activeGate = "Delete"
                             #button changes colour if pressed
-                            logicInterfaceDelete = Button(pos=(625,30), text_input="Delete", font=get_font2(25), base_color="Yellow", hovering_color=GREY)
+                            logicInterfaceDelete = Button(pos=(625,30), text_input="Delete", font=getFont2(25), base_color="Yellow", hovering_color=GREY)
                             logicInterfaceDelete.changeColor(logicInterface_MOUSE_POS)
                             logicInterfaceDelete.update(SCREEN)
                             pygame.display.update()
                             print(activeGate)
                         else:
                             logicInterfaceDelete = Button(pos=(525,30),
-                                    text_input="Delete", font=get_font2(25), base_color="Black", hovering_color=GREY)
+                                    text_input="Delete", font=getFont2(25), base_color="Black", hovering_color=GREY)
                             activeGate = None
                     #undo button pressed
                     if logicInterfaceUndo.checkForInput(logicInterface_MOUSE_POS):
@@ -2062,7 +2076,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
                             logicFile = open(fileName, "wb")
                             pickle.dump(logicArray, logicFile)
                             logicFile.close()
-                            logicSaveText = get_font2(25).render("Save Successful", True, GREEN)
+                            logicSaveText = getFont2(25).render("Save Successful", True, GREEN)
                             logicSaveTextRect = logicSaveText.get_rect()
                             logicSaveTextRect.center = (120,670)
                             SCREEN.blit(logicSaveText, logicSaveTextRect)
@@ -2722,14 +2736,14 @@ def adders():
         
         
         #adder text created
-        adders_TEXT = get_font1(45).render("Please select an adder to load", True, WHITE)
+        adders_TEXT = getFont1(45).render("Please select an adder to load", True, WHITE)
         adders_RECT = adders_TEXT.get_rect(center=(640, 260))
         SCREEN.blit(adders_TEXT, adders_RECT)
         
         #buttons created
-        addersBack = Button(pos=(640,440),text_input="Back", font=get_font2(30), base_color=WHITE, hovering_color=GREEN)
-        addersHalfAdder = Button(pos=(550, 360), text_input="Half Adder", font=get_font2(30), base_color=WHITE, hovering_color=GREEN)
-        addersFullAdder = Button(pos=(730,360), text_input="Full Adder", font = get_font2(30), base_color=WHITE, hovering_color=GREEN)
+        addersBack = Button(pos=(640,440),text_input="Back", font=getFont2(30), base_color=WHITE, hovering_color=GREEN)
+        addersHalfAdder = Button(pos=(550, 360), text_input="Half Adder", font=getFont2(30), base_color=WHITE, hovering_color=GREEN)
+        addersFullAdder = Button(pos=(730,360), text_input="Full Adder", font = getFont2(30), base_color=WHITE, hovering_color=GREEN)
         
         #buttons draw in in interface
         for button in [addersBack, addersHalfAdder, addersFullAdder]:
@@ -2778,20 +2792,20 @@ def mainMenu():
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        menuText = get_font1(100).render("Logic Gate Simulator", True, "#b68f40")
+        menuText = getFont1(100).render("Logic Gate Simulator", True, "#b68f40")
         menuRect = menuText.get_rect(center=(640, 100))
 
         #menu buttons created
         newFileButton = Button(pos=(640, 200), 
-                            text_input="New File", font=get_font1(75), base_color="#d7fcd4", hovering_color=WHITE)
+                            text_input="New File", font=getFont1(75), base_color="#d7fcd4", hovering_color=WHITE)
         loadFileButton = Button(pos=(640, 300), 
-                            text_input="Load File", font=get_font1(75), base_color="#d7fcd4", hovering_color=WHITE)
+                            text_input="Load File", font=getFont1(75), base_color="#d7fcd4", hovering_color=WHITE)
         tutorialButton = Button(pos=(640, 400), 
-                            text_input="Tutorial", font=get_font1(75), base_color="#d7fcd4", hovering_color=WHITE)
+                            text_input="Tutorial", font=getFont1(75), base_color="#d7fcd4", hovering_color=WHITE)
         adderButton = Button(pos=(640, 500), 
-                            text_input="Adders", font=get_font1(75), base_color="#d7fcd4", hovering_color=WHITE)
+                            text_input="Adders", font=getFont1(75), base_color="#d7fcd4", hovering_color=WHITE)
         quitButton = Button(pos=(640, 600), 
-                            text_input="Quit", font=get_font1(75), base_color="#d7fcd4", hovering_color=WHITE)
+                            text_input="Quit", font=getFont1(75), base_color="#d7fcd4", hovering_color=WHITE)
 
         SCREEN.blit(menuText, menuRect)
 
