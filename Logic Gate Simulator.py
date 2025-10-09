@@ -1958,18 +1958,29 @@ def logicInterface(logicArray, fileName, tutorialMode):
                         #finds the outputted information from a combination of inputs in the truth table
                         def checkOutput(combinationList,switchPosArray,lightPosArray):
                             output = []
+                            print(switchPosArray)
+                            for i in range (0,len(switchPosArray)):
+                                logicArray[switchPosArray[i][0]][switchPosArray[i][1]] = ["Switch_OFF",False]
                             print("combination list: " + str(combinationList))
                             #iterates through the combination of inputs
                             for i in range(0,len(combinationList)):
                                 #switch is turned on, if combination specifies
                                 if combinationList[i] == 1:
+                                    #turning on connected wires in all directions
                                     turnOnHorizontalRight(switchPosArray[i][0],switchPosArray[i][1])
+                                    turnOnVerticalDown(switchPosArray[i][0],switchPosArray[i][1])
+                                    turnOnVerticalUp(switchPosArray[i][0],switchPosArray[i][1])
+                                    turnOnHorizontalLeft(switchPosArray[i][0],switchPosArray[i][1])
                                     logicArray[switchPosArray[i][0]][switchPosArray[i][1]] = ["Switch_ON",True]
                                     #main loop run to produce changes in logic array
                                     mainLoop()
                                 #switch is turned off, if combination specifies
                                 elif combinationList[i] == 0:
+                                    #turning off connected wires in all directions
                                     turnOffHorizontalRight(switchPosArray[i][0],switchPosArray[i][1])
+                                    turnOffVerticalDown(switchPosArray[i][0],switchPosArray[i][1])
+                                    turnOffVerticalUp(switchPosArray[i][0],switchPosArray[i][1])
+                                    turnOffHorizontalLeft(switchPosArray[i][0],switchPosArray[i][1])
                                     logicArray[switchPosArray[i][0]][switchPosArray[i][1]] = ["Switch_OFF",False]
                                     #main loop run to produce changes in logic array
                                     mainLoop()
