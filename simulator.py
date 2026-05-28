@@ -1,5 +1,7 @@
 #imports
-import pygame, sys
+from tkinter import Tk, filedialog
+import pygame
+import sys
 from button import Button
 import pickle
 import time
@@ -76,6 +78,34 @@ def getFont2(size):
 
 def getFont3(size):
     return loadFontFromFolder("font3.otf", size)
+
+def save(logicArray):
+    root = Tk()
+    root.withdraw()
+    root.focus_force()
+    root.attributes("-topmost", True)
+
+    filePath = filedialog.asksaveasfilename(
+        initialdir=os.getcwd(),
+        title="Save Simulation",
+        defaultextension=".pkl",
+        filetypes=[("Pickle Files", "*.pkl"), ("All Files", "*.*")]
+    )
+    root.update()
+    root.destroy()
+    
+
+    if filePath:
+        try:
+            with open(filePath, "wb") as f:
+                pickle.dump(logicArray, f)
+            print(f"Successfully saved data to: {filePath}")
+        except Exception as e:
+            print(f"Failed to save file: {e}")
+    else:
+        print("Save cancelled")
+
+    return filePath
 
 #logicArray and fileName parameters are used to return the user to their document once they have saved or go back
 def saveAsInterface(logicArray, fileName):
@@ -402,7 +432,6 @@ def logicInterface(logicArray, fileName, tutorialMode):
     SCREEN = pygame.display.set_mode((1280, 720))
     
     #clock pulse synchronisation
-    lastChange = time.time()
     clockPulse = False
     finalTime = time.time() + 1
     
@@ -1921,7 +1950,8 @@ def logicInterface(logicArray, fileName, tutorialMode):
             #save
             elif keys[pygame.K_LCTRL] and keys[pygame.K_s]:
                 if fileName == None:
-                    saveAsInterface(logicArray, fileName)
+                    save(logicArray)
+                    pygame.event.clear()
                 else:
                     logicFile = open(fileName, "wb")
                     pickle.dump(logicArray, logicFile)
@@ -1949,7 +1979,8 @@ def logicInterface(logicArray, fileName, tutorialMode):
                     #button checker
                     #save as pressed
                     if logicInterfaceSaveAs.checkForInput(logicInterface_MOUSE_POS):
-                        saveAsInterface(logicArray, fileName)
+                        save(logicArray)
+                        pygame.event.clear()
                     #delete pressed
                     if logicInterfaceDelete.checkForInput(logicInterface_MOUSE_POS):
                         #delete functionality acts as an active gate
@@ -2087,7 +2118,8 @@ def logicInterface(logicArray, fileName, tutorialMode):
                         #file is a new document, pressing save directs the user to the save as menu
                         if fileName == None:
                             activeGate = None
-                            saveAsInterface(logicArray, fileName)
+                            save(logicArray)
+                            pygame.event.clear()
                         #file is a previously saved document, pressing save overwrites file contents
                         else:
                             logicFile = open(fileName, "wb")
