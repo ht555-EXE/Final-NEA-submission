@@ -81,6 +81,7 @@ def getFont2(size):
 def getFont3(size):
     return loadFontFromFolder("font3.otf", size)
 
+#TODO: resolve linux support
 def save(logicArray):
     root = Tk()
     root.withdraw()
@@ -93,7 +94,6 @@ def save(logicArray):
     )
     root.destroy()
     
-
     if filePath:
         try:
             with open(filePath, "wb") as f:
@@ -107,94 +107,26 @@ def save(logicArray):
         print("Save cancelled")
         return None
 
+#TODO: resolve linux support
+def load():
+    global redoStack
+    global undoStack
 
-#parameters used to determine the menu to return to, as well the contents of the logic interface, if the user is accessing the menu from there
-def loadInterface(logicArray, fileName, menuBack):
-    pygame.display.set_caption("Load")
-    #font for user text
-    baseFont = getFont3(32)
-    userText = ""
-    #text input is shown in a rectangle
-    inputRect = pygame.Rect(390,315,200,40)
-    colour = pygame.Color(WHITE)
-    while True:
-        load_MOUSE_POS = pygame.mouse.get_pos()
-        SCREEN.fill(BLACK)
-        loadFile_TEXT = getFont2(45).render("Enter file name to load", True, WHITE)
-        loadFile_RECT = loadFile_TEXT.get_rect(center=(640, 260))
-        SCREEN.blit(loadFile_TEXT, loadFile_RECT)
-        loadFileBack = Button(pos=(100, 675), text_input="BACK", font=getFont2(35), base_color=WHITE, hovering_color=GREY)
-        #enter button only works if the user has inputted a name
-        if userText != "":
-            loadFileEnter = Button(pos=(640, 420), text_input="ENTER", font=getFont2(35), base_color=WHITE, hovering_color=GREY)
-        else:
-            loadFileEnter = Button(pos=(640, 420), text_input="ENTER", font=getFont2(35), base_color=GREY, hovering_color=GREY)
-        #user text is placed into pygame window
-        textSurface = baseFont.render(userText,True,(255,255,255))
-        SCREEN.blit(textSurface, (inputRect.x + 5, inputRect.y - 5))
-        pygame.draw.rect(SCREEN,colour,inputRect,2)
-        inputRect.w = textSurface.get_width()+10
-        
-        for button in [loadFileBack, loadFileEnter]:
-            button.changeColor(load_MOUSE_POS)
-            button.update(SCREEN)
-            
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if loadFileBack.checkForInput(load_MOUSE_POS):
-                    #if the user accessed the load interface from the main menu they are returned to the main menu
-                    if menuBack == True:
-                        mainMenu()
-                    #otherwise the user is returned to their logic circuit in the state it was previously
-                    else:
-                        logicInterface(logicArray,fileName, False)
-                if loadFileEnter.checkForInput(load_MOUSE_POS):
-                    print(logicArray)
-                    #exception handling used to check if file exists
-                    try:
-                        logicFile = open(userText, 'rb')
-                    except:
-                        loadFailText = getFont2(35).render("File Not Found", True, RED)
-                        loadFailTextRect = loadFailText.get_rect()
-                        loadFailTextRect.center = (640,380)
-                        SCREEN.blit(loadFailText, loadFailTextRect)
-                        pygame.display.update()
-                        time.sleep(1)
-                    else:
-                        logicArray = pickle.load(logicFile)
-                        logicFile.close()
-                        logicInterface(logicArray,userText, False)
-            if event.type == pygame.KEYDOWN:
-                #pressing backspace removes a letter from the text
-                if event.key == pygame.K_BACKSPACE:
-                    userText = userText[:-1]
-                #if the key being pressed is not alphanumeric nothing happens
-                elif event.key == pygame.K_TAB or event.key == pygame.K_ESCAPE or event.key == pygame.K_DELETE:
-                    pass
-                #pressing enter attempts to load a file
-                elif event.key == pygame.K_RETURN:
-                    try:
-                        logicFile = open(userText, 'rb')
-                    except:
-                        loadFailText = getFont2(35).render("File Not Found", True, RED)
-                        loadFailTextRect = loadFailText.get_rect()
-                        loadFailTextRect.center = (640,380)
-                        SCREEN.blit(loadFailText, loadFailTextRect)
-                        pygame.display.update()
-                        time.sleep(1)
-                    else:
-                        logicArray = pickle.load(logicFile)
-                        logicFile.close()
-                        logicInterface(logicArray,userText, False)
-                #pressing any other key adds it to text input
-                else:
-                    if len(userText) <= 30:
-                        userText += event.unicode
-                
-        pygame.display.update()
+    filePath = filedialog.askopenfilename(
+        title ="Select a Simulation File",
+        filetypes=[("Pickle Files", "*.pkl"), ("All Files", "*.*")]
+    )
+
+    if filePath:
+        try:
+            with open(filePath, 'rb') as f:
+                logicArray = pickle.load(f)
+        except Exception as e:
+            print(f"Failed to save file: {e}")
+            return
+        redoStack = []
+        undoStack = []
+        logicInterface(logicArray, filePath, False)
         
 def translate(truthTable, switchCount, lightCount, switchCombinations, logicArray, fileName):
     pygame.display.set_caption("Truth Table")
@@ -335,7 +267,9 @@ def windowNaming(fileName):
 def logicInterface(logicArray, fileName, tutorialMode):
     if tutorialMode == True:
         pygame.display.set_caption("Tutorial")
-        
+    else:
+        windowNaming(fileName)
+
     #global variables
     global count
     global lastCountChange
@@ -1882,7 +1816,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
                     print("Save Successful")
             #load
             elif keys[pygame.K_LCTRL] and keys[pygame.K_l]:
-                loadInterface(logicArray, fileName,False)
+                load()
                 print(logicArray)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -2052,7 +1986,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
                     #load button pressed
                     if logicInterfaceLoad.checkForInput(logicInterface_MOUSE_POS):
                         activeGate = None
-                        loadInterface(logicArray, fileName,False)
+                        load()
                         print(logicArray)
                     #clear button pressed
                     if logicInterfaceClear.checkForInput(logicInterface_MOUSE_POS):
@@ -2789,7 +2723,7 @@ def mainMenu():
                     logicInterface(logicArray, None,False)
                 #load file button pressed
                 if loadFileButton.checkForInput(MENU_MOUSE_POS):
-                    loadInterface(logicArray,None,True)
+                    load()
                 #adder button pressed
                 if adderButton.checkForInput(MENU_MOUSE_POS):
                     adders()
