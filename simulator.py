@@ -1,11 +1,13 @@
 #imports
 from tkinter import Tk, filedialog
 import pygame
+from pathlib import Path
 import sys
-from button import Button
 import pickle
 import time
 import os
+
+from button import Button
 
 #clock pulse variables set
 finalTime = 0
@@ -82,8 +84,6 @@ def getFont3(size):
 def save(logicArray):
     root = Tk()
     root.withdraw()
-    root.focus_force()
-    root.attributes("-topmost", True)
 
     filePath = filedialog.asksaveasfilename(
         initialdir=os.getcwd(),
@@ -91,7 +91,6 @@ def save(logicArray):
         defaultextension=".pkl",
         filetypes=[("Pickle Files", "*.pkl"), ("All Files", "*.*")]
     )
-    root.update()
     root.destroy()
     
 
@@ -100,97 +99,14 @@ def save(logicArray):
             with open(filePath, "wb") as f:
                 pickle.dump(logicArray, f)
             print(f"Successfully saved data to: {filePath}")
+            return filePath
         except Exception as e:
             print(f"Failed to save file: {e}")
+            return None
     else:
         print("Save cancelled")
+        return None
 
-    return filePath
-
-#logicArray and fileName parameters are used to return the user to their document once they have saved or go back
-def saveAsInterface(logicArray, fileName):
-    pygame.display.set_caption("Save As")
-    #font for user text
-    baseFont = getFont3(32)
-    userText = ""
-    #text input is shown to user in a rectangle
-    inputRect = pygame.Rect(390,315,200,40)
-    colour = pygame.Color(WHITE)
-    while True:
-        saveAs_MOUSE_POS = pygame.mouse.get_pos()
-        SCREEN.fill(BLACK)
-        saveFile_TEXT = getFont2(45).render("Enter New File Name", True, WHITE)
-        saveFile_RECT = saveFile_TEXT.get_rect(center=(640, 260))
-        SCREEN.blit(saveFile_TEXT, saveFile_RECT)
-        saveFileBack = Button(pos=(100, 675), text_input="BACK", font=getFont2(35), base_color=WHITE, hovering_color=GREY)
-        #enter button only works if the user has inputted a name
-        if userText != "":
-            saveFileEnter = Button(pos=(640, 420), text_input="ENTER", font=getFont2(35), base_color=WHITE, hovering_color=GREY)
-        else:
-            saveFileEnter = Button(pos=(640, 420), text_input="ENTER", font=getFont2(35), base_color=GREY, hovering_color=GREY)
-        #user text is placed onto pygame window
-        textSurface = baseFont.render(userText,True,(255,255,255))
-        SCREEN.blit(textSurface, (inputRect.x + 5, inputRect.y - 5))
-        pygame.draw.rect(SCREEN,colour,inputRect,2)
-        #rectangle changes with the length of the text
-        inputRect.w = textSurface.get_width()+10
-        
-        for button in [saveFileBack, saveFileEnter]:
-            button.changeColor(saveAs_MOUSE_POS)
-            button.update(SCREEN)
-        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                #pressing back returns the user to the logic interface in the state it was before
-                if saveFileBack.checkForInput(saveAs_MOUSE_POS):
-                    logicInterface(logicArray, fileName, False)
-                if saveFileEnter.checkForInput(saveAs_MOUSE_POS):
-                    #enter button only works if the user has inputted a name
-                    if userText != "":
-                        logicFile = open(userText, 'wb')
-                        pickle.dump(logicArray, logicFile)
-                        logicFile.close()
-                        print("Save Successful")
-                        #save successful prompt displayed
-                        saveText = getFont2(35).render("Save Successful", True, GREEN)
-                        saveTextRect = saveText.get_rect()
-                        saveTextRect.center = (640,380)
-                        SCREEN.blit(saveText, saveTextRect)
-                        pygame.display.update()
-                        #prompt is displayed for one second
-                        time.sleep(1)
-                        #returns user to logic document
-                        logicInterface(logicArray, userText, False)
-            if event.type == pygame.KEYDOWN:
-                #pressing backspace removes a letter from the text
-                if event.key == pygame.K_BACKSPACE:
-                    userText = userText[:-1]
-                #if the key being pressed is not alphanumeric nothing happens
-                elif event.key == pygame.K_TAB or event.key == pygame.K_ESCAPE or event.key == pygame.K_DELETE:
-                    pass
-                #pressing enter attempts a save
-                elif event.key == pygame.K_RETURN:
-                    if userText != "":
-                        logicFile = open(userText, 'wb')
-                        pickle.dump(logicArray, logicFile)
-                        logicFile.close()
-                        print("Save Successful")
-                        saveText = getFont2(35).render("Save Successful", True, GREEN)
-                        saveTextRect = saveText.get_rect()
-                        saveTextRect.center = (640,380)
-                        SCREEN.blit(saveText, saveTextRect)
-                        pygame.display.update()
-                        time.sleep(1)
-                        logicInterface(logicArray, userText, False)
-                #pressing any other key adds it to the text input
-                else:
-                    #max character limit 30
-                    if len(userText) <= 30:
-                        userText += event.unicode
-        pygame.display.update()
 
 #parameters used to determine the menu to return to, as well the contents of the logic interface, if the user is accessing the menu from there
 def loadInterface(logicArray, fileName, menuBack):
@@ -409,15 +325,16 @@ def translate(truthTable, switchCount, lightCount, switchCombinations, logicArra
         pygame.display.update()
     
 
-        
-def logicInterface(logicArray, fileName, tutorialMode):
+def windowNaming(fileName):
     #window naming
-    if tutorialMode == True:
-        pygame.display.set_caption("Tutorial")
-    elif fileName == None:
+    if fileName == None:
         pygame.display.set_caption("New Document")
     else:
-        pygame.display.set_caption(fileName)
+        pygame.display.set_caption(Path(fileName).stem)
+        
+def logicInterface(logicArray, fileName, tutorialMode):
+    if tutorialMode == True:
+        pygame.display.set_caption("Tutorial")
         
     #global variables
     global count
@@ -976,7 +893,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
         elif fileName == None:
             fileNameText = getFont3(15).render("New Document", True, BLACK)
         else:
-            fileNameText = getFont3(15).render(fileName, True, BLACK)
+            fileNameText = getFont3(15).render(Path(fileName).stem, True, BLACK)
         fileNameTextRect = fileNameText.get_rect()
         fileNameTextRect.center = (1100,10)
         SCREEN.blit(fileNameText, fileNameTextRect)
@@ -1950,8 +1867,8 @@ def logicInterface(logicArray, fileName, tutorialMode):
             #save
             elif keys[pygame.K_LCTRL] and keys[pygame.K_s]:
                 if fileName == None:
-                    save(logicArray)
-                    pygame.event.clear()
+                    fileName = save(logicArray)
+                    windowNaming(fileName)
                 else:
                     logicFile = open(fileName, "wb")
                     pickle.dump(logicArray, logicFile)
@@ -1980,7 +1897,7 @@ def logicInterface(logicArray, fileName, tutorialMode):
                     #save as pressed
                     if logicInterfaceSaveAs.checkForInput(logicInterface_MOUSE_POS):
                         save(logicArray)
-                        pygame.event.clear()
+                        windowNaming(fileName)
                     #delete pressed
                     if logicInterfaceDelete.checkForInput(logicInterface_MOUSE_POS):
                         #delete functionality acts as an active gate
@@ -2118,8 +2035,8 @@ def logicInterface(logicArray, fileName, tutorialMode):
                         #file is a new document, pressing save directs the user to the save as menu
                         if fileName == None:
                             activeGate = None
-                            save(logicArray)
-                            pygame.event.clear()
+                            fileName = save(logicArray)
+                            windowNaming(fileName)
                         #file is a previously saved document, pressing save overwrites file contents
                         else:
                             logicFile = open(fileName, "wb")
